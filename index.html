@@ -1,0 +1,78 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sheron | Premium Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Sheron</h1>
+        <nav>
+            <a href="#about">About</a>
+            <a href="#projects">Gallery</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
+
+    <section class="hero" id="about">
+        <div class="hero-text">
+            <h2>Hi, I'm Sheron</h2>
+            <p>I do every type of photography except for sports, giving special shout-outs to each genre individually. Turning your memories into emotions that last forever.</p>
+        </div>
+        <img src="images/photo1.jpg" alt="Sheron Portfolio">
+    </section>
+
+    <section class="skills">
+        <h3>Skills</h3>
+        <div class="skills-list">Photography <span>|</span> Editing <span>|</span> Lighting</div>
+    </section>
+
+    <section class="projects" id="projects">
+        <h3>Gallery</h3>
+        <div class="project-grid" id="gallery">
+            <div class="project"><img src="images/photo1.jpg" alt="Photo 1"></div>
+            <div class="project"><img src="images/photo2.jpg" alt="Photo 2"></div>
+            <div class="project"><img src="images/photo3.jpg" alt="Photo 3"></div>
+        </div>
+        <button id="adminBtn" style="display:none;">Add Photo</button>
+    </section>
+
+    <section class="contact" id="contact">
+        <h3>Let's Work Together</h3>
+        <p>Ready to turn your vision into reality? Contact me today!</p>
+        <a href="mailto:your-email@example.com" class="btn">Contact Me</a>
+    </section>
+
+    <footer>
+        &copy; 2025 Sheron. All rights reserved.
+    </footer>
+
+    <script>
+        const password = "SheronSecret123";
+        const adminBtn = document.getElementById("adminBtn");
+        const gallery = document.getElementById("gallery");
+
+        window.addEventListener('keydown', (e) => {
+            if(e.ctrlKey && e.key === 'a'){
+                let pass = prompt("Enter admin password:");
+                if(pass === password){
+                    adminBtn.style.display = "inline-block";
+                } else {
+                    alert("Incorrect password!");
+                }
+            }
+        });
+
+        adminBtn.addEventListener('click', () => {
+            const url = prompt("Enter image URL (GitHub raw URL recommended):");
+            if(url){
+                const div = document.createElement("div");
+                div.classList.add("project");
+                div.innerHTML = `<img src="${url}" alt="New Photo">`;
+                gallery.appendChild(div);
+            }
+        });
+    </script>
+</body>
+</html>
