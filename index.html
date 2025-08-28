@@ -63,6 +63,7 @@ footer {text-align:center; padding:20px; font-size:0.9rem; color:#aaa;}
   <a href="mailto:sheronsaji123@gmail.com" class="btn">Contact Me</a>
 </section>
 <footer>&copy; 2025 Sheron. All rights reserved.</footer>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
 <script>
 const gallery = document.getElementById('gallery');
@@ -93,19 +94,29 @@ function initGallery() {
 
         const actions = document.createElement('div');
         actions.className = 'actions';
+
         const previewBtn = document.createElement('button');
         previewBtn.innerText = '🔍';
         previewBtn.onclick = e => { e.preventDefault(); link.click(); };
+
         const downloadBtn = document.createElement('button');
         downloadBtn.innerText = '⬇️';
-        downloadBtn.onclick = () => {
-          const dl = document.createElement('a');
-          dl.href = file.download_url;
-          dl.download = file.name;
-          document.body.appendChild(dl);
-          dl.click();
-          document.body.removeChild(dl);
+        downloadBtn.onclick = async () => {
+          try {
+            const response = await fetch(file.download_url);
+            const blob = await response.blob();
+            const dl = document.createElement('a');
+            dl.href = URL.createObjectURL(blob);
+            dl.download = file.name;
+            document.body.appendChild(dl);
+            dl.click();
+            document.body.removeChild(dl);
+            URL.revokeObjectURL(dl.href);
+          } catch (err) {
+            console.error("Download failed", err);
+          }
         };
+
         actions.appendChild(previewBtn);
         actions.appendChild(downloadBtn);
 
@@ -136,6 +147,17 @@ document.getElementById('downloadAll').addEventListener('click', ()=> {
   window.location.href = `https://github.com/${repo}/archive/refs/heads/main.zip`;
 });
 
+// Force close lightbox on any overlay or image click
+document.addEventListener("click", (e) => {
+  const lbOverlay = document.querySelector(".lightboxOverlay");
+  const lb = document.querySelector(".lightbox");
+  if (lbOverlay && lb && (e.target === lbOverlay || e.target === lb)) {
+    const closeBtn = document.querySelector(".lb-close");
+    if (closeBtn) closeBtn.click();
+  }
+});
+
+// Particle background
 const canvas = document.getElementById('particleCanvas');
 const ctx = canvas.getContext('2d');
 function sizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
