@@ -28,11 +28,30 @@ section h3 {font-size:2rem; margin:12px 20px 16px; color:#fff;}
 .photo-frame:hover img { transform: scale(1.1); filter: brightness(1.2); }
 .actions { position:absolute; bottom:12px; left:50%; transform:translateX(-50%); display:flex; gap:12px; opacity:0; transition: opacity 0.2s; }
 .photo-frame:hover .actions { opacity:1; }
-.actions button { padding:8px 12px; border:none; background:#bfa14a; color:#111; border-radius:6px; cursor:pointer; font-weight:600; font-size:1rem; }
-.actions button:hover { background:#ffd066; }
+.actions button { padding:8px 12px; border:none; background:#bfa14a; color:#111; border-radius:6px; cursor:pointer; font-weight:600; font-size:1rem; transition: all 0.2s ease; }
+.actions button:hover { background:#ffd066; transform: scale(1.05); }
 .btn {display:inline-block; padding:15px 30px; background:#bfa14a; color:#111; border:none; border-radius:12px; font-weight:600; text-decoration:none; margin:20px auto; cursor:pointer; transition:0.3s; font-size:1.2rem;}
 .btn:hover {background:#ffd066;}
 footer {text-align:center; padding:30px; font-size:1.2rem; color:#aaa;}
+
+/* Toast notification for download feedback */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #bfa14a;
+  color: #111;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1000;
+}
+.toast.show {
+  opacity: 1;
+}
 </style>
 </head>
 <body>
@@ -62,11 +81,23 @@ footer {text-align:center; padding:30px; font-size:1.2rem; color:#aaa;}
   <a href="mailto:sheronsaji123@gmail.com" class="btn">Contact Me</a>
 </section>
 <footer>&copy; 2025 Sheron. All rights reserved.</footer>
+<div class="toast" id="downloadToast"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
 <script>
 const gallery = document.getElementById('gallery');
 const repo = "shrnsji-photo/website_portfolio";
 const folder = "images";
+
+// Function to show toast notification
+function showToast(message) {
+  const toast = document.getElementById('downloadToast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
+}
 
 function initGallery() {
   fetch(`https://api.github.com/repos/${repo}/contents/${folder}`)
@@ -92,19 +123,34 @@ function initGallery() {
 
         const actions = document.createElement('div');
         actions.className = 'actions';
+        
+        // Preview button
         const previewBtn = document.createElement('button');
-        previewBtn.innerText = '🔍';
-        previewBtn.onclick = e => { e.preventDefault(); link.click(); };
+        previewBtn.innerText = '🔍 Preview';
+        previewBtn.onclick = e => { 
+          e.preventDefault(); 
+          link.click(); 
+        };
+        
+        // Download button - fixed to prevent event bubbling
         const downloadBtn = document.createElement('button');
-        downloadBtn.innerText = '⬇️';
-        downloadBtn.onclick = () => {
+        downloadBtn.innerText = '⬇️ Download';
+        downloadBtn.onclick = e => {
+          e.preventDefault();
+          e.stopPropagation(); // Prevent event from bubbling to parent elements
+          
+          // Create download link
           const dl = document.createElement('a');
           dl.href = file.download_url;
           dl.download = file.name;
           document.body.appendChild(dl);
           dl.click();
           document.body.removeChild(dl);
+          
+          // Show feedback
+          showToast(`Downloading ${file.name}...`);
         };
+        
         actions.appendChild(previewBtn);
         actions.appendChild(downloadBtn);
 
@@ -114,14 +160,32 @@ function initGallery() {
       });
 
       if (typeof lightbox !== 'undefined') {
-        lightbox.option({resizeDuration: 200, wrapAround: true, fadeDuration: 200, imageFadeDuration: 200, disableScrolling: true, positionFromTop: 100, showImageNumberLabel: false, albumLabel: '', alwaysShowNavOnTouchDevices: true, clickOutsideToClose: true});
+        lightbox.option({
+          resizeDuration: 200, 
+          wrapAround: true, 
+          fadeDuration: 200, 
+          imageFadeDuration: 200, 
+          disableScrolling: true, 
+          positionFromTop: 100, 
+          showImageNumberLabel: false, 
+          albumLabel: '', 
+          alwaysShowNavOnTouchDevices: true, 
+          clickOutsideToClose: true
+        });
       }
+    })
+    .catch(error => {
+      console.error('Error loading gallery:', error);
+      gallery.innerHTML = '<p>Unable to load gallery at this time. Please try again later.</p>';
     });
 }
 initGallery();
 
-document.getElementById('downloadAll').addEventListener('click', ()=> {
-  window.location.href = `https://github.com/${repo}/archive/refs/heads/main.zip`;
+document.getElementById('downloadAll').addEventListener('click', () => {
+  showToast('Preparing all images for download...');
+  setTimeout(() => {
+    window.location.href = `https://github.com/${repo}/archive/refs/heads/main.zip`;
+  }, 1000);
 });
 
 const canvas = document.getElementById('particleCanvas');
