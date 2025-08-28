@@ -1,85 +1,104 @@
 * {margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif;}
-body {background:#fff; color:#111; line-height:1.6; transition: background 0.3s, color 0.3s;}
-header {display:flex; justify-content:space-between; align-items:center; padding:20px; border-bottom:1px solid #eee;}
-header h1 {font-size:2rem; font-weight:700;}
-nav a {margin-left:20px; text-decoration:none; color:#111; font-weight:500; transition:0.3s;}
-nav a:hover {color:#bfa14a;}
-.hero {text-align:center; padding:50px 20px;}
-.hero-text h2 {font-size:2.5rem; margin-bottom:15px;}
-.hero-text p {font-size:1.2rem; color:#555;}
+body {background:#111; color:#fff; line-height:1.6; overflow-x:hidden; transition: background 0.3s, color 0.3s;}
 
-/* Gallery Grid */
+/* Background Flares */
+.flare-bg {
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background: radial-gradient(circle at 25% 25%, rgba(255,191,74,0.1), transparent 40%),
+              radial-gradient(circle at 75% 75%, rgba(191,74,255,0.08), transparent 50%);
+  z-index:-2;
+  animation: flareMove 30s linear infinite;
+}
+@keyframes flareMove {0% {transform:translate(0,0);} 50% {transform:translate(-50px,50px);} 100% {transform:translate(0,0);}}
+
+/* Particles */
+#particleCanvas {position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1;}
+
+/* Header */
+header {display:flex; justify-content:space-between; align-items:center; padding:15px 20px; position:sticky; top:0; background:rgba(17,17,17,0.85); z-index:10; border-bottom:1px solid #333;}
+header h1 {font-size:1.8rem; font-weight:700; color:#bfa14a;}
+nav a {margin-left:15px; text-decoration:none; color:#fff; font-weight:500; transition:0.3s;}
+nav a:hover {color:#bfa14a;}
+
+/* Hero */
+.hero {text-align:center; padding:40px 15px;}
+.hero-text h2 {font-size:2.2rem; margin-bottom:12px; text-shadow: 0 0 10px rgba(255,191,74,0.5);}
+.hero-text p {font-size:1.1rem; color:#ddd; text-shadow: 0 0 8px rgba(0,0,0,0.5);}
+
+/* Gallery */
 .gallery-grid {
   display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
-  gap:15px;
-  padding:20px;
+  grid-template-columns:repeat(auto-fit, minmax(120px,1fr));
+  gap:12px;
+  padding:15px;
 }
-
 .photo-frame {
   position: relative;
-  overflow: hidden;
-  border-radius:15px;
-  cursor: pointer;
-  transition: transform 0.3s, box-shadow 0.3s;
+  overflow:hidden;
+  border-radius:12px;
+  cursor:pointer;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  background: #222;
 }
 .photo-frame img {
   width:100%;
   display:block;
   height:auto;
-  border-radius:15px;
-  transition: transform 0.5s ease;
+  border-radius:12px;
+  transition: transform 0.4s ease, filter 0.3s ease;
 }
 .photo-frame:hover img {
-  transform: scale(1.05) rotate(1deg);
+  transform: scale(1.05) rotateY(1deg);
+  filter: brightness(1.2);
 }
 .photo-frame:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(255,191,74,0.3);
 }
-
 .actions {
   display:flex;
   justify-content:space-around;
-  padding:10px;
-  background:rgba(255,255,255,0.95);
+  padding:6px;
+  background:rgba(0,0,0,0.7);
   opacity:0;
   transition: opacity 0.3s;
 }
-.photo-frame:hover .actions {
-  opacity:1;
-}
-
+.photo-frame:hover .actions {opacity:1;}
 .actions button {
-  padding:6px 12px;
+  padding:4px 8px;
   border:none;
   background:#bfa14a;
-  color:#fff;
+  color:#111;
   border-radius:6px;
   font-weight:600;
   cursor:pointer;
-  transition:0.3s;
+  font-size:0.8rem;
 }
-.actions button:hover {background:#a68a36;}
+.actions button:hover {background:#ffd066;}
 
+/* Buttons */
 .btn {
   display:inline-block;
-  padding:12px 25px;
+  padding:10px 20px;
   background:#bfa14a;
-  color:#fff;
+  color:#111;
   border:none;
   border-radius:8px;
   font-weight:600;
   text-decoration:none;
-  margin:20px auto;
+  margin:15px auto;
   cursor:pointer;
   transition:0.3s;
 }
-.btn:hover {background:#a68a36;}
+.btn:hover {background:#ffd066;}
 
-footer {text-align:center; padding:20px; font-size:0.9rem; color:#666;}
+/* Footer */
+footer {text-align:center; padding:20px; font-size:0.9rem; color:#aaa;}
 
+/* Responsive */
 @media(max-width:768px){
-  .hero{padding:30px 10px;}
-  .gallery-grid{grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px;}
+  .gallery-grid{grid-template-columns:repeat(auto-fit,minmax(100px,1fr)); gap:10px;}
+  .hero-text h2{font-size:1.8rem;}
 }
