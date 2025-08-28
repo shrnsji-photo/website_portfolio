@@ -1,8 +1,8 @@
 const gallery = document.getElementById('gallery');
-const repo = "shrnsji-photo/website_portfolio"; // your GitHub repo
+const repo = "shrnsji-photo/website_portfolio"; // your GitHub username/repo
 const folder = "images";
 
-// Fetch images dynamically from GitHub
+// Load images dynamically
 fetch(`https://api.github.com/repos/${repo}/contents/${folder}`)
 .then(res => res.json())
 .then(data => {
@@ -41,7 +41,7 @@ fetch(`https://api.github.com/repos/${repo}/contents/${folder}`)
     });
 });
 
-// Download all as ZIP
+// Download all repo images as ZIP
 document.getElementById('downloadAll').addEventListener('click', () => {
     window.location.href = `https://github.com/${repo}/archive/refs/heads/main.zip`;
 });
