@@ -29,54 +29,67 @@ nav a:hover {color:#bfa14a;}
 
 /* Gallery */
 .gallery-grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(120px,1fr));
-  gap:12px;
-  padding:15px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    gap: 6px;
+    padding: 10px;
 }
+
 .photo-frame {
-  position: relative;
-  overflow:hidden;
-  border-radius:12px;
-  cursor:pointer;
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
-  background: #222;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: #222;
+    aspect-ratio: 1 / 1; /* keeps tiles square like phone gallery */
 }
+
 .photo-frame img {
-  width:100%;
-  display:block;
-  height:auto;
-  border-radius:12px;
-  transition: transform 0.4s ease, filter 0.3s ease;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* fills tile neatly */
+    border-radius: 10px;
+    transition: transform 0.3s ease, filter 0.3s ease;
 }
+
 .photo-frame:hover img {
-  transform: scale(1.05) rotateY(1deg);
-  filter: brightness(1.2);
+    transform: scale(1.1);
+    filter: brightness(1.2);
 }
+
 .photo-frame:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 30px rgba(255,191,74,0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255,191,74,0.3);
 }
+
 .actions {
-  display:flex;
-  justify-content:space-around;
-  padding:6px;
-  background:rgba(0,0,0,0.7);
-  opacity:0;
-  transition: opacity 0.3s;
+    display: flex;
+    justify-content: space-around;
+    padding: 4px;
+    background: rgba(0,0,0,0.7);
+    opacity: 0;
+    transition: opacity 0.2s;
+    font-size: 0.7rem;
 }
-.photo-frame:hover .actions {opacity:1;}
+
+.photo-frame:hover .actions { opacity: 1; }
+
 .actions button {
-  padding:4px 8px;
-  border:none;
-  background:#bfa14a;
-  color:#111;
-  border-radius:6px;
-  font-weight:600;
-  cursor:pointer;
-  font-size:0.8rem;
+    padding: 2px 5px;
+    border: none;
+    background: #bfa14a;
+    color: #111;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
 }
-.actions button:hover {background:#ffd066;}
+
+.actions button:hover { background: #ffd066; }
+
+@media (max-width: 768px) {
+    .gallery-grid { grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap: 4px; }
+}
 
 /* Buttons */
 .btn {
