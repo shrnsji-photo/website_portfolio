@@ -1,16 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Sheron | Premium Portfolio</title>
-<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css">
+<style>
+* {margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif;}
+body {background:#111; color:#fff; line-height:1.6; overflow-x:hidden; transition: background 0.3s, color 0.3s;}
+
+/* Background Flares */
+.flare-bg {position:fixed; top:0; left:0; width:100%; height:100%; background: radial-gradient(circle at 25% 25%, rgba(255,191,74,0.1), transparent 40%), radial-gradient(circle at 75% 75%, rgba(191,74,255,0.08), transparent 50%); z-index:-2; animation: flareMove 30s linear infinite;}
+@keyframes flareMove {0% {transform:translate(0,0);} 50% {transform:translate(-50px,50px);} 100% {transform:translate(0,0);}}
+
+/* Particles */
+#particleCanvas {position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1;}
+
+/* Header */
+header {display:flex; justify-content:space-between; align-items:center; padding:15px 20px; position:sticky; top:0; background:rgba(17,17,17,0.85); z-index:10; border-bottom:1px solid #333;}
+header h1 {font-size:1.8rem; font-weight:700; color:#bfa14a;}
+nav a {margin-left:15px; text-decoration:none; color:#fff; font-weight:500; transition:0.3s;}
+nav a:hover {color:#bfa14a;}
+
+/* Hero */
+.hero {text-align:center; padding:40px 15px;}
+.hero-text h2 {font-size:2.2rem; margin-bottom:12px; text-shadow: 0 0 10px rgba(255,191,74,0.5);}
+.hero-text p {font-size:1.1rem; color:#ddd; text-shadow: 0 0 8px rgba(0,0,0,0.5);}
+
+/* Section headings */
+section h3 {font-size:1.4rem; margin:6px 12px 8px; color:#fff;}
+
+/* Phone-like Gallery */
+.gallery-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  padding: 10px;
+}
+.photo-frame {
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: #222;
+  overflow: hidden;
+  position: relative;
+}
+.photo-frame img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+.photo-frame:hover img {
+  transform: scale(1.05);
+  filter: brightness(1.2);
+}
+.actions {position:absolute; bottom:6px; left:50%; transform:translateX(-50%); display:flex; gap:8px; opacity:0; transition: opacity 0.2s;}
+.photo-frame:hover .actions {opacity:1;}
+.actions button {padding:5px; border:none; background:#bfa14a; color:#111; border-radius:4px; cursor:pointer; font-weight:600;}
+.actions button:hover{background:#ffd066;}
+
+/* Buttons */
+.btn {display:inline-block; padding:10px 20px; background:#bfa14a; color:#111; border:none; border-radius:8px; font-weight:600; text-decoration:none; margin:15px auto; cursor:pointer; transition:0.3s;}
+.btn:hover {background:#ffd066;}
+
+/* Footer */
+footer {text-align:center; padding:20px; font-size:0.9rem; color:#aaa;}
+</style>
 </head>
 <body>
-
 <div class="flare-bg"></div>
 <canvas id="particleCanvas"></canvas>
-
 <header>
   <h1>Sheron</h1>
   <nav>
@@ -18,30 +86,95 @@
     <a href="#contact">Contact</a>
   </nav>
 </header>
-
 <section class="hero" id="about">
   <div class="hero-text">
     <h2>Hi, I'm Sheron</h2>
     <p>Turning your memories into emotions that last forever.</p>
   </div>
 </section>
-
-<section class="projects" id="gallery">
-    <h3>Gallery</h3>
-    <div id="gallery" class="gallery-grid"></div>
-    <button id="downloadAll" class="btn">Download All</button>
+<section class="projects" id="gallery-section">
+  <h3>Gallery</h3>
+  <div id="gallery" class="gallery-grid"></div>
+  <button id="downloadAll" class="btn">Download All</button>
 </section>
-
 <section class="contact" id="contact">
   <h3>Let's Work Together</h3>
   <p>Ready to turn your vision into reality? Contact me today!</p>
   <a href="mailto:sheronsaji123@gmail.com" class="btn">Contact Me</a>
 </section>
+<footer>&copy; 2025 Sheron. All rights reserved.</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
+<script>
+const gallery = document.getElementById('gallery');
+const repo = "shrnsji-photo/website_portfolio";
+const folder = "images";
 
-<footer>
-  &copy; 2025 Sheron. All rights reserved.
-</footer>
+function initGallery() {
+  fetch(`https://api.github.com/repos/${repo}/contents/${folder}`)
+    .then(res => res.json())
+    .then(data => {
+      const items = data.filter(file => file.type === "file" && /\.(jpg|jpeg|png|gif)$/i.test(file.name));
+      items.forEach(file => {
+        const frame = document.createElement('div');
+        frame.className = 'photo-frame';
 
-<script src="script.js"></script>
+        const link = document.createElement('a');
+        link.href = file.download_url;
+        link.setAttribute('data-lightbox', 'gallery');
+        link.setAttribute('data-title', file.name);
+
+        const img = document.createElement('img');
+        img.src = file.download_url;
+        img.alt = file.name;
+        link.appendChild(img);
+
+        const actions = document.createElement('div');
+        actions.className = 'actions';
+        const previewBtn = document.createElement('button');
+        previewBtn.innerText = '🔍';
+        previewBtn.onclick = e => { e.preventDefault(); link.click(); };
+        const downloadBtn = document.createElement('button');
+        downloadBtn.innerText = '⬇️';
+        downloadBtn.onclick = () => {
+          const dl = document.createElement('a');
+          dl.href = file.download_url;
+          dl.download = file.name;
+          document.body.appendChild(dl);
+          dl.click();
+          document.body.removeChild(dl);
+        };
+        actions.appendChild(previewBtn);
+        actions.appendChild(downloadBtn);
+
+        frame.appendChild(link);
+        frame.appendChild(actions);
+        gallery.appendChild(frame);
+      });
+
+      // Initialize Lightbox for dynamically added images
+      if (typeof lightbox !== 'undefined') {
+        lightbox.option({resizeDuration: 200, wrapAround: true});
+        lightbox.init();
+      }
+    });
+}
+
+initGallery();
+
+document.getElementById('downloadAll').addEventListener('click', ()=> {
+  window.location.href = `https://github.com/${repo}/archive/refs/heads/main.zip`;
+});
+
+// Particles
+const canvas = document.getElementById('particleCanvas');
+const ctx = canvas.getContext('2d');
+function sizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+sizeCanvas();
+const particles=[];
+for(let i=0;i<60;i++){particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1,dx:(Math.random()-0.5)*0.5,dy:(Math.random()-0.5)*0.5,color:`rgba(255,191,74,${Math.random()})`});}
+function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(p=>{p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>canvas.width)p.dx*=-1;if(p.y<0||p.y>canvas.height)p.dy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.color;ctx.fill();});requestAnimationFrame(animate);}
+animate();
+window.addEventListener('resize', sizeCanvas);
+</script>
 </body>
 </html>
