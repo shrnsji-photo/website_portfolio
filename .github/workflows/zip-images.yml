@@ -1,26 +1,30 @@
 name: Zip Images
+
 on:
   push:
     paths:
-      - 'images/**'
+      - 'images/**'  # Trigger only when images folder changes
 
 jobs:
   zip:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Needed to push changes back
+
     steps:
-      - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Zip images
-        run: zip -r gallery.zip images
+    - name: Zip images
+      run: |
+        zip -r gallery.zip images
 
-      - name: Commit ZIP
-        run: |
-          git config --local user.name "github-actions"
-          git config --local user.email "github-actions@github.com"
-          git add gallery.zip
-          git commit -m "Update gallery.zip" || echo "No changes to commit"
-      - name: Push changes
-        run: |
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Commit and Push ZIP
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add gallery.zip
+        git commit -m "Update gallery.zip" || echo "No changes to commit"
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
