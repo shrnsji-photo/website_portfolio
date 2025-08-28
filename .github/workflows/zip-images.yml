@@ -8,13 +8,19 @@ jobs:
   zip:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Zip images
-      run: zip -r gallery.zip images
-    - name: Commit ZIP
-      run: |
-        git config --local user.name "github-actions"
-        git config --local user.email "github-actions@github.com"
-        git add gallery.zip
-        git commit -m "Update gallery.zip"
-        git push
+      - uses: actions/checkout@v3
+
+      - name: Zip images
+        run: zip -r gallery.zip images
+
+      - name: Commit ZIP
+        run: |
+          git config --local user.name "github-actions"
+          git config --local user.email "github-actions@github.com"
+          git add gallery.zip
+          git commit -m "Update gallery.zip" || echo "No changes to commit"
+      - name: Push changes
+        run: |
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
