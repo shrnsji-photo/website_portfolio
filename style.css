@@ -1,4 +1,5 @@
-body {margin:0; font-family:'Poppins', sans-serif; background:#fff; color:#111;}
+* {margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif;}
+body {background:#fff; color:#111; line-height:1.6; transition: background 0.3s, color 0.3s;}
 header {display:flex; justify-content:space-between; align-items:center; padding:20px; border-bottom:1px solid #eee;}
 header h1 {font-size:2rem; font-weight:700;}
 nav a {margin-left:20px; text-decoration:none; color:#111; font-weight:500; transition:0.3s;}
@@ -7,35 +8,50 @@ nav a:hover {color:#bfa14a;}
 .hero-text h2 {font-size:2.5rem; margin-bottom:15px;}
 .hero-text p {font-size:1.2rem; color:#555;}
 
+/* Gallery Grid */
 .gallery-grid {
   display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(280px,1fr));
-  gap:20px;
+  grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+  gap:15px;
   padding:20px;
 }
+
 .photo-frame {
-  background:#fff;
-  border-radius:12px;
-  box-shadow:0 4px 20px rgba(0,0,0,0.05);
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  transition:0.3s;
+  position: relative;
+  overflow: hidden;
+  border-radius:15px;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 .photo-frame img {
   width:100%;
   display:block;
   height:auto;
+  border-radius:15px;
+  transition: transform 0.5s ease;
 }
+.photo-frame:hover img {
+  transform: scale(1.05) rotate(1deg);
+}
+.photo-frame:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+}
+
 .actions {
   display:flex;
   justify-content:space-around;
   padding:10px;
-  background:#f9f9f9;
+  background:rgba(255,255,255,0.95);
+  opacity:0;
+  transition: opacity 0.3s;
 }
+.photo-frame:hover .actions {
+  opacity:1;
+}
+
 .actions button {
-  padding:8px 12px;
+  padding:6px 12px;
   border:none;
   background:#bfa14a;
   color:#fff;
@@ -44,11 +60,10 @@ nav a:hover {color:#bfa14a;}
   cursor:pointer;
   transition:0.3s;
 }
-.actions button:hover {
-  background:#a68a36;
-}
+.actions button:hover {background:#a68a36;}
 
 .btn {
+  display:inline-block;
   padding:12px 25px;
   background:#bfa14a;
   color:#fff;
@@ -56,7 +71,15 @@ nav a:hover {color:#bfa14a;}
   border-radius:8px;
   font-weight:600;
   text-decoration:none;
+  margin:20px auto;
+  cursor:pointer;
   transition:0.3s;
 }
 .btn:hover {background:#a68a36;}
+
 footer {text-align:center; padding:20px; font-size:0.9rem; color:#666;}
+
+@media(max-width:768px){
+  .hero{padding:30px 10px;}
+  .gallery-grid{grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px;}
+}
