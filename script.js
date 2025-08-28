@@ -1,18 +1,19 @@
 const gallery = document.getElementById('gallery');
-const repo = "YOUR_USERNAME/YOUR_REPO"; // replace with your GitHub username and repo
-const folder = "images"; // folder with photos
+const repo = "shrnsji-photo/website_portfolio"; // your GitHub repo
+const folder = "images";
 
+// Fetch images dynamically from GitHub
 fetch(`https://api.github.com/repos/${repo}/contents/${folder}`)
 .then(res => res.json())
 .then(data => {
-    data.forEach(file => {
+    data.filter(file => file.type === "file" && /\.(jpg|jpeg|png|gif)$/i.test(file.name))
+    .forEach(file => {
         const frame = document.createElement('div');
         frame.className = 'photo-frame';
         
         const img = document.createElement('img');
         img.src = file.download_url;
         img.alt = file.name;
-        img.onclick = () => window.open(file.download_url,'_blank');
         
         const actions = document.createElement('div');
         actions.className = 'actions';
@@ -38,4 +39,9 @@ fetch(`https://api.github.com/repos/${repo}/contents/${folder}`)
         frame.appendChild(actions);
         gallery.appendChild(frame);
     });
+});
+
+// Download all as ZIP
+document.getElementById('downloadAll').addEventListener('click', () => {
+    window.location.href = `https://github.com/${repo}/archive/refs/heads/main.zip`;
 });
