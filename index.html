@@ -35,9 +35,10 @@ section{padding:120px 8%;}
 h2{font-size:2.2rem;margin-bottom:30px;}
 .statement{max-width:800px;line-height:1.8;opacity:.85}
 
-/* IMAGE GRID */
-.wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;}
-.wall img{width:100%;height:180px;object-fit:cover;cursor:pointer;transition:transform .2s;}
+/* IMAGE GRID — FULL ASPECT RATIO */
+.wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+.wall a{display:block;}
+.wall img{width:100%;height:auto;object-fit:contain;cursor:pointer;transition:transform .2s;}
 .wall img:hover{transform:scale(1.03)}
 
 /* CTA */
