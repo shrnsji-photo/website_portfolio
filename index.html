@@ -7,12 +7,14 @@
 <meta name="description" content="Sheron — Photographer focused on intent, realism, and visual systems.">
 <meta name="theme-color" content="#000">
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css">
+
 <style>
 *{
   margin:0;
   padding:0;
   box-sizing:border-box;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+  font-family:system-ui,-apple-system,Segoe UI;
 }
 
 body{
@@ -23,6 +25,31 @@ body{
 
 a{text-decoration:none;color:inherit}
 
+/* IMAGE BACKGROUND */
+.imageBackground{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background-size:cover;
+  background-position:center;
+  filter:blur(22px) brightness(.35);
+  transform:scale(1.1);
+  z-index:-2;
+}
+
+/* DARK OVERLAY */
+.overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,.6);
+  z-index:-1;
+}
+
 /* NAV */
 nav{
   position:fixed;
@@ -32,7 +59,7 @@ nav{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  background:rgba(0,0,0,.7);
+  background:rgba(0,0,0,.6);
   backdrop-filter:blur(12px);
   z-index:20;
 }
@@ -66,7 +93,7 @@ nav a{
 .hero p{
   margin-top:22px;
   font-size:1.1rem;
-  opacity:.65;
+  opacity:.7;
 }
 
 /* SECTIONS */
@@ -84,7 +111,7 @@ h2{
   max-width:820px;
   line-height:1.9;
   font-size:1.05rem;
-  opacity:.8;
+  opacity:.85;
 }
 
 /* IMAGE WALL */
@@ -98,19 +125,13 @@ h2{
   width:100%;
   height:380px;
   object-fit:cover;
-  filter:grayscale(100%);
-  transition:.6s;
-}
-
-.wall img:hover{
-  filter:grayscale(0);
-  transform:scale(1.02);
+  transition:.4s;
+  cursor:pointer;
 }
 
 /* CTA */
 .cta{
   text-align:center;
-  background:linear-gradient(180deg,#080808,#000);
 }
 
 .cta a{
@@ -139,6 +160,9 @@ footer{
 </head>
 
 <body>
+
+<div class="imageBackground" id="imageBackground"></div>
+<div class="overlay"></div>
 
 <nav>
   <span>SHERON</span>
@@ -179,10 +203,13 @@ footer{
   © 2025 Sheron — Deployed via GitHub Pages
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
+
 <script>
 const repo = "shrnsji-photo/website_portfolio"
 const folder = "images"
 const wall = document.getElementById("imageWall")
+const bg = document.getElementById("imageBackground")
 
 fetch(`https://api.github.com/repos/${repo}/contents/${folder}`)
   .then(r => r.json())
@@ -193,12 +220,32 @@ fetch(`https://api.github.com/repos/${repo}/contents/${folder}`)
 
     imgs.sort(() => Math.random() - 0.5)
 
+    if(imgs.length){
+      bg.style.backgroundImage = `url(${imgs[0].download_url})`
+    }
+
     imgs.slice(0, 8).forEach(f => {
+      const a = document.createElement("a")
+      a.href = f.download_url
+      a.setAttribute("data-lightbox","gallery")
+
       const img = document.createElement("img")
       img.src = f.download_url
       img.loading = "lazy"
-      wall.appendChild(img)
+
+      a.appendChild(img)
+      wall.appendChild(a)
     })
+
+    if(typeof lightbox !== "undefined"){
+      lightbox.option({
+        resizeDuration:200,
+        fadeDuration:200,
+        imageFadeDuration:200,
+        wrapAround:true,
+        showImageNumberLabel:false
+      })
+    }
   })
   .catch(() => {
     wall.innerHTML =
