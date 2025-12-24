@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Sheron — Visual Systems</title>
+<title>Sheron — Photography</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Sheron — Photographer focused on intent, realism, and visual systems.">
+<meta name="description" content="Sheron — Photographer. Original work presented without distortion.">
 <meta name="theme-color" content="#000">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css">
@@ -25,7 +25,7 @@ body{
 
 a{text-decoration:none;color:inherit}
 
-/* IMAGE BACKGROUND */
+/* IMAGE BACKGROUND (PURE SOURCE, ONLY BLUR) */
 .imageBackground{
   position:fixed;
   top:0;
@@ -34,19 +34,15 @@ a{text-decoration:none;color:inherit}
   height:100%;
   background-size:cover;
   background-position:center;
-  filter:blur(22px) brightness(.35);
+  filter:blur(24px);
   transform:scale(1.1);
   z-index:-2;
 }
 
-/* DARK OVERLAY */
 .overlay{
   position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,.6);
+  inset:0;
+  background:rgba(0,0,0,.65);
   z-index:-1;
 }
 
@@ -60,8 +56,8 @@ nav{
   justify-content:space-between;
   align-items:center;
   background:rgba(0,0,0,.6);
-  backdrop-filter:blur(12px);
-  z-index:20;
+  backdrop-filter:blur(10px);
+  z-index:10;
 }
 
 nav span{
@@ -86,46 +82,44 @@ nav a{
 }
 
 .hero h1{
-  font-size:clamp(3rem,6vw,6rem);
+  font-size:clamp(3rem,6vw,5rem);
   letter-spacing:4px;
 }
 
 .hero p{
-  margin-top:22px;
-  font-size:1.1rem;
+  margin-top:20px;
+  font-size:1.05rem;
   opacity:.7;
 }
 
 /* SECTIONS */
 section{
-  padding:140px 10%;
+  padding:120px 8%;
 }
 
 h2{
-  font-size:2.4rem;
-  margin-bottom:40px;
+  font-size:2.2rem;
+  margin-bottom:30px;
 }
 
 /* STATEMENT */
 .statement{
-  max-width:820px;
-  line-height:1.9;
-  font-size:1.05rem;
+  max-width:800px;
+  line-height:1.8;
   opacity:.85;
 }
 
-/* IMAGE WALL */
+/* IMAGE GRID — SMALLER, DENSE */
 .wall{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:26px;
+  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:14px;
 }
 
 .wall img{
   width:100%;
-  height:380px;
+  height:180px;
   object-fit:cover;
-  transition:.4s;
   cursor:pointer;
 }
 
@@ -136,11 +130,11 @@ h2{
 
 .cta a{
   display:inline-block;
-  margin-top:26px;
-  padding:16px 46px;
+  margin-top:24px;
+  padding:14px 42px;
   border:1px solid #fff;
   letter-spacing:2px;
-  font-size:.85rem;
+  font-size:.8rem;
   transition:.3s;
 }
 
@@ -174,33 +168,32 @@ footer{
 
 <div class="hero">
   <div>
-    <h1>Visual Systems</h1>
-    <p>Photography built on intent, not trends.</p>
+    <h1>Photography</h1>
+    <p>Work presented as captured. Nothing added. Nothing removed.</p>
   </div>
 </div>
 
 <section>
   <h2>Statement</h2>
   <p class="statement">
-    I don’t document moments — I design how they’re remembered.
-    My work lives between realism and distortion, structure and instinct.
-    If it feels controlled, it is.
+    These images are shown without interpretation layers.
+    What you see is the work — light, timing, and intent.
   </p>
 </section>
 
 <section id="work">
-  <h2>Selected Frames</h2>
+  <h2>All Images</h2>
   <div class="wall" id="imageWall"></div>
 </section>
 
 <section id="contact" class="cta">
-  <h2>Let’s Build Something Precise</h2>
-  <p>Available for commissions, collaborations, and concept-driven work.</p>
-  <a href="mailto:sheronsaji123@gmail.com">INITIATE CONTACT</a>
+  <h2>Contact</h2>
+  <p>Available for commissions and collaborations.</p>
+  <a href="mailto:sheronsaji123@gmail.com">EMAIL</a>
 </section>
 
 <footer>
-  © 2025 Sheron — Deployed via GitHub Pages
+  © 2025 Sheron — GitHub Pages
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
@@ -208,6 +201,7 @@ footer{
 <script>
 const repo = "shrnsji-photo/website_portfolio"
 const folder = "images"
+
 const wall = document.getElementById("imageWall")
 const bg = document.getElementById("imageBackground")
 
@@ -224,7 +218,7 @@ fetch(`https://api.github.com/repos/${repo}/contents/${folder}`)
       bg.style.backgroundImage = `url(${imgs[0].download_url})`
     }
 
-    imgs.slice(0, 8).forEach(f => {
+    imgs.forEach(f => {
       const a = document.createElement("a")
       a.href = f.download_url
       a.setAttribute("data-lightbox","gallery")
@@ -237,19 +231,16 @@ fetch(`https://api.github.com/repos/${repo}/contents/${folder}`)
       wall.appendChild(a)
     })
 
-    if(typeof lightbox !== "undefined"){
+    if(window.lightbox){
       lightbox.option({
         resizeDuration:200,
-        fadeDuration:200,
-        imageFadeDuration:200,
         wrapAround:true,
         showImageNumberLabel:false
       })
     }
   })
   .catch(() => {
-    wall.innerHTML =
-      "<p style='opacity:.6'>Images unavailable at this time.</p>"
+    wall.innerHTML = "<p style='opacity:.6'>Unable to load images.</p>"
   })
 </script>
 
