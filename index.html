@@ -2,247 +2,169 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Sheron — Photography</title>
+<title>SHERON — Photography</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Sheron — Photographer. Original work presented without distortion.">
-<meta name="theme-color" content="#000">
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css">
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:system-ui,-apple-system,Segoe UI;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-body{
-  background:#000;
-  color:#f2f2f2;
-  overflow-x:hidden;
+body {
+    background: #0b0b0b;
+    color: #f2f2f2;
+    overflow-x: hidden;
 }
 
-a{text-decoration:none;color:inherit}
-
-/* IMAGE BACKGROUND (PURE SOURCE, ONLY BLUR) */
-.imageBackground{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background-size:cover;
-  background-position:center;
-  filter:blur(24px);
-  transform:scale(1.1);
-  z-index:-2;
+/* ---------- BACKGROUND ---------- */
+.bg {
+    position: fixed;
+    inset: 0;
+    background: url("imagebackground/bg.jpg") center/cover no-repeat;
+    filter: blur(35px) brightness(0.5);
+    transform: scale(1.2);
+    z-index: -2;
 }
 
-.overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.65);
-  z-index:-1;
+/* ---------- HERO ---------- */
+.hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 1rem;
 }
 
-/* NAV */
-nav{
-  position:fixed;
-  top:0;
-  width:100%;
-  padding:20px 60px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:rgba(0,0,0,.6);
-  backdrop-filter:blur(10px);
-  z-index:10;
+.hero-box {
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(12px);
+    padding: 3rem;
+    max-width: 900px;
+    width: 100%;
+    border-radius: 16px;
 }
 
-nav span{
-  font-weight:600;
-  letter-spacing:3px;
+.hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    letter-spacing: 0.15em;
+    margin-bottom: 1rem;
 }
 
-nav a{
-  margin-left:30px;
-  font-size:.85rem;
-  opacity:.7;
+.hero p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    max-width: 700px;
 }
 
-/* HERO */
-.hero{
-  height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:0 12%;
+/* ---------- GALLERY ---------- */
+.gallery {
+    padding: 4rem 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
 }
 
-.hero h1{
-  font-size:clamp(3rem,6vw,5rem);
-  letter-spacing:4px;
+.gallery img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.25s ease;
 }
 
-.hero p{
-  margin-top:20px;
-  font-size:1.05rem;
-  opacity:.7;
+.gallery img:hover {
+    transform: scale(1.03);
 }
 
-/* SECTIONS */
-section{
-  padding:120px 8%;
+/* ---------- LIGHTBOX ---------- */
+.lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
 }
 
-h2{
-  font-size:2.2rem;
-  margin-bottom:30px;
+.lightbox img {
+    max-width: 95vw;
+    max-height: 95vh;
+    object-fit: contain;
 }
 
-/* STATEMENT */
-.statement{
-  max-width:800px;
-  line-height:1.8;
-  opacity:.85;
-}
-
-/* IMAGE GRID — SMALLER, DENSE */
-.wall{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
-  gap:14px;
-}
-
-.wall img{
-  width:100%;
-  height:180px;
-  object-fit:cover;
-  cursor:pointer;
-}
-
-/* CTA */
-.cta{
-  text-align:center;
-}
-
-.cta a{
-  display:inline-block;
-  margin-top:24px;
-  padding:14px 42px;
-  border:1px solid #fff;
-  letter-spacing:2px;
-  font-size:.8rem;
-  transition:.3s;
-}
-
-.cta a:hover{
-  background:#fff;
-  color:#000;
-}
-
-/* FOOTER */
-footer{
-  text-align:center;
-  padding:40px;
-  font-size:.75rem;
-  opacity:.5;
+/* ---------- FOOTER ---------- */
+footer {
+    text-align: center;
+    padding: 2rem;
+    opacity: 0.5;
+    font-size: 0.9rem;
 }
 </style>
 </head>
 
 <body>
 
-<div class="imageBackground" id="imageBackground"></div>
-<div class="overlay"></div>
+<div class="bg"></div>
 
-<nav>
-  <span>SHERON</span>
-  <div>
-    <a href="#work">WORK</a>
-    <a href="#contact">CONTACT</a>
-  </div>
-</nav>
+<section class="hero">
+    <div class="hero-box">
+        <h1>SHERON</h1>
+        <p>
+            Photography without filters, without compromise.  
+            Light, timing, intent — nothing else.
+        </p>
+    </div>
+</section>
 
-<div class="hero">
-  <div>
-    <h1>Photography</h1>
-    <p>Work presented as captured. Nothing added. Nothing removed.</p>
-  </div>
+<section class="gallery" id="gallery"></section>
+
+<div class="lightbox" id="lightbox">
+    <img id="lightbox-img">
 </div>
 
-<section>
-  <h2>Statement</h2>
-  <p class="statement">
-    These images are shown without interpretation layers.
-    What you see is the work — light, timing, and intent.
-  </p>
-</section>
-
-<section id="work">
-  <h2>All Images</h2>
-  <div class="wall" id="imageWall"></div>
-</section>
-
-<section id="contact" class="cta">
-  <h2>Contact</h2>
-  <p>Available for commissions and collaborations.</p>
-  <a href="mailto:sheronsaji123@gmail.com">EMAIL</a>
-</section>
-
 <footer>
-  © 2025 Sheron — GitHub Pages
+    © Sheron — All images remain unmodified.
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
-
 <script>
-const repo = "shrnsji-photo/website_portfolio"
-const folder = "images"
+const USER = "shrnsji-photo";
+const REPO = "website_portfolio";
+const PATH = "images";
 
-const wall = document.getElementById("imageWall")
-const bg = document.getElementById("imageBackground")
+const gallery = document.getElementById("gallery");
+const lightbox = document.getElementById("lightbox");
+const lightboxImg = document.getElementById("lightbox-img");
 
-fetch(`https://api.github.com/repos/${repo}/contents/${folder}`)
-  .then(r => r.json())
-  .then(files => {
-    const imgs = files.filter(f =>
-      f.type === "file" && /\.(jpg|jpeg|png|webp)$/i.test(f.name)
-    )
+fetch(`https://api.github.com/repos/${USER}/${REPO}/contents/${PATH}`)
+.then(r => r.json())
+.then(files => {
+    files.forEach(f => {
+        if (!f.name.match(/\.(jpg|jpeg|png|webp)$/i)) return;
 
-    imgs.sort(() => Math.random() - 0.5)
+        const img = document.createElement("img");
+        img.src = f.download_url;
+        img.loading = "lazy";
 
-    if(imgs.length){
-      bg.style.backgroundImage = `url(${imgs[0].download_url})`
-    }
+        img.onclick = () => {
+            lightboxImg.src = img.src;
+            lightbox.style.display = "flex";
+        };
 
-    imgs.forEach(f => {
-      const a = document.createElement("a")
-      a.href = f.download_url
-      a.setAttribute("data-lightbox","gallery")
+        gallery.appendChild(img);
+    });
+});
 
-      const img = document.createElement("img")
-      img.src = f.download_url
-      img.loading = "lazy"
-
-      a.appendChild(img)
-      wall.appendChild(a)
-    })
-
-    if(window.lightbox){
-      lightbox.option({
-        resizeDuration:200,
-        wrapAround:true,
-        showImageNumberLabel:false
-      })
-    }
-  })
-  .catch(() => {
-    wall.innerHTML = "<p style='opacity:.6'>Unable to load images.</p>"
-  })
+lightbox.onclick = () => {
+    lightbox.style.display = "none";
+    lightboxImg.src = "";
+};
 </script>
 
 </body>
 </html>
+
