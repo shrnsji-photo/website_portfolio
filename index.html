@@ -5,7 +5,164 @@
 <title>SHERON — Photography</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<style><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sheron | Premium Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css">
 <style>
+* {margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif;}
+body {background:#111; color:#fff; overflow-x:hidden;}
+.flare-bg {position:fixed; top:0; left:0; width:100%; height:100%; background: radial-gradient(circle at 25% 25%, rgba(255,191,74,0.1), transparent 40%), radial-gradient(circle at 75% 75%, rgba(191,74,255,0.08), transparent 50%); z-index:-2; animation: flareMove 30s linear infinite;}
+@keyframes flareMove {0% {transform:translate(0,0);} 50% {transform:translate(-50px,50px);} 100% {transform:translate(0,0);}}
+#particleCanvas {position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1;}
+header {display:flex; justify-content:space-between; align-items:center; padding:25px 40px; position:sticky; top:0; background:rgba(17,17,17,0.85); z-index:10; border-bottom:1px solid #333;}
+header h1 {font-size:2.8rem; font-weight:700; color:#bfa14a;}
+nav a {margin-left:25px; text-decoration:none; color:#fff; font-weight:500; transition:0.3s; font-size:1.2rem;}
+nav a:hover {color:#bfa14a;}
+.hero {text-align:center; padding:80px 30px;}
+.hero-text h2 {font-size:3.5rem; margin-bottom:20px; text-shadow: 0 0 15px rgba(255,191,74,0.5);}
+.hero-text p {font-size:1.6rem; color:#ddd; text-shadow: 0 0 10px rgba(0,0,0,0.5);}
+section h3 {font-size:2rem; margin:12px 20px 16px; color:#fff;}
+.gallery-grid { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; padding: 0; }
+.photo-frame { flex: 0 0 auto; display: flex; align-items: center; justify-content: center; position: relative; margin:0; width:300px; height:auto; }
+.photo-frame img { display:block; width:100%; height:auto; object-fit:contain; transition: transform 0.3s ease; }
+.photo-frame:hover img { transform: scale(1.05); }
+.actions { position:absolute; bottom:12px; left:50%; transform:translateX(-50%); display:flex; gap:12px; opacity:0; transition: opacity 0.2s; }
+.photo-frame:hover .actions { opacity:1; }
+.actions button { padding:8px 12px; border:none; background:#bfa14a; color:#111; border-radius:6px; cursor:pointer; font-weight:600; font-size:1rem; transition: all 0.2s ease; }
+.actions button:hover { background:#ffd066; transform: scale(1.05); }
+.btn {display:inline-block; padding:15px 30px; background:#bfa14a; color:#111; border:none; border-radius:12px; font-weight:600; text-decoration:none; margin:20px auto; cursor:pointer; transition:0.3s; font-size:1.2rem;}
+.btn:hover {background:#ffd066;}
+.contact-box {background: rgba(0,0,0,0.55); backdrop-filter: blur(12px); padding: 3rem; max-width: 700px; margin: 0 auto 80px auto; text-align:center; border-radius:16px;}
+footer {text-align:center; padding:30px; font-size:1.2rem; color:#aaa;}
+.toast {position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #bfa14a; color: #111; padding: 12px 24px; border-radius: 8px; font-weight: 600; opacity: 0; transition: opacity 0.3s ease; z-index: 1000;}
+.toast.show {opacity: 1;}
+</style>
+</head>
+<body>
+<div class="flare-bg"></div>
+<canvas id="particleCanvas"></canvas>
+<header>
+  <h1>Sheron</h1>
+  <nav>
+    <a href="#gallery">Gallery</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+<section class="hero" id="about">
+  <div class="hero-text">
+    <h2>Hi, I'm Sheron</h2>
+    <p>Turning your memories into emotions that last forever.</p>
+  </div>
+</section>
+<section class="projects" id="gallery-section">
+  <h3>Gallery</h3>
+  <div id="gallery" class="gallery-grid"></div>
+  <button id="downloadAll" class="btn">Download All</button>
+</section>
+<section class="contact" id="contact">
+  <div class="contact-box">
+    <h3>Let's Work Together</h3>
+    <p>Ready to turn your vision into reality? Contact me today!</p>
+    <a href="mailto:sheronsaji123@gmail.com" class="btn">Contact Me</a>
+  </div>
+</section>
+<footer>&copy; 2025 Sheron. All rights reserved.</footer>
+<div class="toast" id="downloadToast"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
+<script>
+const gallery = document.getElementById('gallery');
+const repo = "shrnsji-photo/website_portfolio";
+const folder = "images";
+function showToast(message){
+  const toast = document.getElementById('downloadToast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  setTimeout(()=>toast.classList.remove('show'),3000);
+}
+function initGallery(){
+  fetch(`https://api.github.com/repos/${repo}/contents/${folder}`)
+    .then(res => res.json())
+    .then(data => {
+      const items = data.filter(file => file.type === "file" && /\.(jpg|jpeg|png|gif)$/i.test(file.name));
+      items.forEach(file => {
+        const frame = document.createElement('div');
+        frame.className='photo-frame';
+        const img=new Image();
+        img.src=file.download_url;
+        img.onload=()=>{};
+        const link=document.createElement('a');
+        link.href=file.download_url;
+        link.setAttribute('data-lightbox','gallery');
+        link.setAttribute('data-title',file.name);
+        link.appendChild(img);
+        const actions=document.createElement('div');
+        actions.className='actions';
+        const previewBtn=document.createElement('button');
+        previewBtn.innerText='🔍 Preview';
+        previewBtn.onclick=e=>{e.preventDefault();link.click();};
+        const downloadBtn=document.createElement('button');
+        downloadBtn.innerText='⬇️ Download';
+        downloadBtn.onclick=e=>{
+          e.preventDefault();
+          e.stopPropagation();
+          const dl=document.createElement('a');
+          dl.href=file.download_url;
+          dl.download=file.name;
+          document.body.appendChild(dl);
+          dl.click();
+          document.body.removeChild(dl);
+          showToast(`Downloading ${file.name}...`);
+        };
+        actions.appendChild(previewBtn);
+        actions.appendChild(downloadBtn);
+        frame.appendChild(link);
+        frame.appendChild(actions);
+        gallery.appendChild(frame);
+      });
+      if(typeof lightbox!=='undefined'){
+        lightbox.option({
+          resizeDuration:200, 
+          wrapAround:true, 
+          fadeDuration:200, 
+          imageFadeDuration:200, 
+          disableScrolling:true, 
+          positionFromTop:100, 
+          showImageNumberLabel:false, 
+          albumLabel:'', 
+          alwaysShowNavOnTouchDevices:true, 
+          clickOutsideToClose:true
+        });
+      }
+    }).catch(error=>{
+      console.error('Error loading gallery:',error);
+      gallery.innerHTML='<p>Unable to load gallery at this time. Please try again later.</p>';
+    });
+}
+initGallery();
+const canvas=document.getElementById('particleCanvas');
+const ctx=canvas.getContext('2d');
+function sizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+sizeCanvas();
+const particles=[];
+for(let i=0;i<60;i++){particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*3+1,dx:(Math.random()-0.5)*0.7,dy:(Math.random()-0.5)*0.7,color:`rgba(255,191,74,${Math.random()})`});}
+function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(p=>{p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>canvas.width)p.dx*=-1;if(p.y<0||p.y>canvas.height)p.dy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.color;ctx.fill();});requestAnimationFrame(animate);}
+animate();
+window.addEventListener('resize',sizeCanvas);
+document.getElementById('downloadAll').addEventListener('click',()=>{
+  showToast('Preparing all images for download...');
+  setTimeout(()=>window.location.href=`https://github.com/${repo}/archive/refs/heads/main.zip`,1000);
+});
+</script>
+</body>
+</html>
+
 * {
     margin: 0;
     padding: 0;
